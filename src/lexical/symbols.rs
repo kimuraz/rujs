@@ -63,12 +63,12 @@ static OPERATORS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
     SymbolTrie::new(&[
         "+", "-", "*", "**", "/", "%", "==", "!=", "<", "<=", ">",
         ">=", "&&", "||", "!", "=", "+=", "-=", "*=", "/=", "%=",
-        "===", ".", "...",
+        "===", "..."
     ])
 });
 
 static DELIMITERS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
-    SymbolTrie::new(&["(", ")", "{", "}", "[", "]", ",", ";", ":"])
+    SymbolTrie::new(&["(", ")", "{", "}", "[", "]", ",", ";", ":", "."])
 });
 
 static KEYWORDS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
@@ -135,19 +135,19 @@ mod tests {
     }
 
     #[test]
-    fn test_code_with_dot_and_spread() {
+    fn test_code_with_dot() {
         let code: Vec<char> = "obj.prop".chars().collect();
 
-        let result_dot = OPERATORS_TRIE.match_symbol(&code, 3);
+        let result_dot = DELIMITERS_TRIE.match_symbol(&code, 3);
         assert_eq!(result_dot, Some((".".to_string(), 4)));
     }
 
     #[test]
     fn test_code_with_spread_operator() {
-        let code: Vec<char> = "...args".chars().collect();
+        let code: Vec<char> = "obj.props(...args)".chars().collect();
 
-        let result_spread = OPERATORS_TRIE.match_symbol(&code, 0);
-        assert_eq!(result_spread, Some(("...".to_string(), 3)));
+        let result_spread = OPERATORS_TRIE.match_symbol(&code, 10);
+        assert_eq!(result_spread, Some(("...".to_string(), 13)));
     }
 
     #[test]
@@ -187,14 +187,14 @@ mod tests {
     fn test_non_keyword_match() {
         let code: Vec<char> = "foo".chars().collect();
         let result = KEYWORDS_TRIE.match_symbol(&code, 0);
-        assert_eq!(result, None); // "foo" is not a keyword
+        assert_eq!(result, None);
     }
 
     #[test]
     fn test_keyword_with_prefix() {
         let code: Vec<char> = "letVar".chars().collect();
         let result = KEYWORDS_TRIE.match_symbol(&code, 0);
-        assert_eq!(result, Some(("let".to_string(), 3))); // Matches "let" as a prefix
+        assert_eq!(result, Some(("let".to_string(), 3)));
     }
 
     #[test]
