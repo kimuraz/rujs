@@ -51,29 +51,24 @@ impl Lexer {
 
     pub fn next_token(&mut self) -> Token {
         while let Some(ch) = self.current_char {
-            println!("Next token {} - {} - {} - {}", self.current_char.unwrap(), self.position, self.code[self.position], ch);
             if ch.is_whitespace() {
                 self.skip_whitespace();
                 continue;
             }
 
             if ch.is_alphabetic() || ch == '_' || ch == '$' {
-                println!("calling lex_identifier_or_keyword with {}", ch);
                 return self.lex_identifier_or_keyword();
             }
 
             if ch.is_digit(10) {
-                println!("calling lex_number with {}", ch);
                 return self.lex_number();
             }
 
             if ch == '"' || ch == '\'' {
-                println!("calling lex_string with {}", ch);
                 return self.lex_string();
             }
 
             if let Some(token) = self.lex_operator_or_delimiter() {
-                println!("calling lex_operator_or_delimiter with {}", ch);
                 return token;
             }
 
@@ -86,7 +81,6 @@ impl Lexer {
 
     fn lex_operator_or_delimiter(&mut self) -> Option<Token> {
         if let Some((symbol, end)) = OPERATORS_TRIE.match_symbol(&self.code, self.position, false) {
-            println!("symbol: {}, end: {}", symbol, end);
             for i in self.position..end {
                 self.advance();
             }
@@ -94,7 +88,6 @@ impl Lexer {
         }
 
         if let Some((symbol, end)) = DELIMITERS_TRIE.match_symbol(&self.code, self.position, false) {
-            println!("symbol_delimiter: {}, end: {}, position: {}", symbol, end, self.position);
             for i in self.position..end {
                 self.advance();
             }
@@ -123,22 +116,17 @@ impl Lexer {
         let mut value = String::new();
 
         while let Some(ch) = self.current_char {
-            println!("ch: {}", ch);
             if ch.is_alphanumeric() || ch == '_' || ch == '$' {
-                println!("ch2: {}", ch);
                 value.push(ch);
                 self.advance();
             } else {
-                println!("ch3: {}", ch);
                 break;
             }
         }
 
         if KEYWORDS_TRIE.match_symbol(&value.chars().collect::<Vec<_>>(), 0, true).is_some() {
-            println!("keyword: {}", value);
             Token::Keyword(value)
         } else {
-            println!("identifier: {}", value);
             Token::Identifier(value)
         }
     }
@@ -302,7 +290,6 @@ mod tests {
 
         for expected in expected_tokens {
             let actual = lexer.next_token();
-            println!("Expected: {:?}, Actual: {:?}", expected, actual);
             assert_eq!(actual, expected);
         }
     }
