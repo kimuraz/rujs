@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::LazyLock;
 
 #[derive(Debug)]
-struct SymbolTrie {
+pub struct SymbolTrie {
     children: HashMap<char, SymbolTrie>,
     is_last: bool,
 }
@@ -71,7 +71,7 @@ impl SymbolTrie {
     }
 }
 
-static OPERATORS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
+pub static OPERATORS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
     SymbolTrie::new(&[
         "+", "-", "*", "**", "/", "%", "==", "!=", "<", "<=", ">",
         ">=", "&&", "||", "!", "=", "+=", "-=", "*=", "/=", "%=",
@@ -79,15 +79,17 @@ static OPERATORS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
     ])
 });
 
-static DELIMITERS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
+pub static DELIMITERS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
     SymbolTrie::new(&DELIMITERS)
 });
 
-static KEYWORDS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
+pub static KEYWORDS_TRIE: LazyLock<SymbolTrie> = LazyLock::new(|| {
     SymbolTrie::new(&[
-        "if", "else", "for", "while", "do", "break", "continue", "return", 
-        "function", "var", "let", "const", "true", "false", "null", "undefined",
-        "new", "class", "extends", "this", "super", "import", "from",
+        "let", "const", "var", "if", "else", "for", "while", "do", "break",
+        "continue", "return", "function", "true", "false", "null", "undefined",
+        "new", "this", "delete", "typeof", "in", "instanceof", "void", "catch",
+        "try", "finally", "switch", "case", "default", "throw", "class", "extends",
+        "super", "import", "export", "from", "as", "await", "async", "yield",
     ])
 });
 
