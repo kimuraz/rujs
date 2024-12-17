@@ -81,14 +81,14 @@ impl Lexer {
 
     fn lex_operator_or_delimiter(&mut self) -> Option<Token> {
         if let Some((symbol, end)) = OPERATORS_TRIE.match_symbol(&self.code, self.position, false) {
-            for i in self.position..end {
+            for _i in self.position..end {
                 self.advance();
             }
             return Some(Token::Operator(symbol));
         }
 
         if let Some((symbol, end)) = DELIMITERS_TRIE.match_symbol(&self.code, self.position, false) {
-            for i in self.position..end {
+            for _i in self.position..end {
                 self.advance();
             }
             return Some(Token::Delimiter(symbol));
