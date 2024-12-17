@@ -5,7 +5,7 @@ pub enum Token {
     Keyword(String),
     Identifier(String),
     Number(String),
-    StringLiteral(String),
+    Literal(String),
     Operator(String),
     Delimiter(String),
     EOF,
@@ -159,7 +159,7 @@ impl Lexer {
             }
         }
 
-        Token::StringLiteral(value)
+        Token::Literal(value)
     }
 }
 
@@ -224,7 +224,7 @@ mod tests {
         let strings = vec!["hello", "world", "multi-line\nstring"];
 
         for string in strings {
-            assert_eq!(lexer.next_token(), Token::StringLiteral(string.to_string()));
+            assert_eq!(lexer.next_token(), Token::Literal(string.to_string()));
         }
 
         assert_eq!(lexer.next_token(), Token::EOF);
